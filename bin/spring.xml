@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans default-init-method="myInit" default-destroy-method="cleanUp" xmlns = "http://www.springframework.org/schema/beans"
+   xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation = "http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+   xmlns:context="http://www.springframework.org/schema/context">
+   
+
+<!-- 	<bean id="parenttriangle" class = "org.koushik.javabrains.Triangle" abstract="true"> here abstract is used to indicate Spring not create bean for this bean definition, it's just a template
+		<property name="pointA" ref="pointA" />
+		<property name="points">
+			<list>
+				<ref bean="pointA" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="triangle1" class = "org.koushik.javabrains.Triangle" parent="parenttriangle">
+		<property name="points">
+			<list merge="true">
+				<ref bean="pointB" />
+			</list>
+		</property>
+	
+		<property name="pointB" ref="pointB" />
+		<property name="pointC" ref="pointC" />
+ 	</bean>
+
+	<bean id="triangle2" class = "org.koushik.javabrains.Triangle" parent="parenttriangle">
+		<property name="pointB" ref="pointB" />
+	</bean>
+ -->	
+   <bean id = "triangle" class = "org.koushik.javabrains.Triangle" name="triangle-name" autowire="byName"
+   								init-method="myInit" destroy-method="cleanUp"> <!-- here name is for alias 
+   															autowire="byType" or "constructor" by default autowire is OFF	-->
+   		
+  <!--  		<property name="points">
+   			<list>
+   				<ref bean="zeroPoint" />
+   				<ref bean="Point2" />
+   				<ref bean="Point3" />
+   			</list>
+   		</property> -->
+   
+   		<!-- <property name="pointA" ref="zeroPoint" /> -->	<!-- here ref can refer name, alias and id -->
+   		   		<!-- <property name="pointB" ref="Point2" />
+   		<property name="pointC" ref="Point3" /> -->
+   		
+   	<!-- <property name="pointA">
+   			<idref= "zeroPoint" />	
+   		</property>
+   		<property name="pointB">
+		   <bean class="org.koushik.javabrains.Point">
+		   		<property name="x" value="-200" />
+		   		<property name="y" value="0" />
+		   </bean>
+		</property>
+		<property name="pointC">
+		   <bean id="pointT" class="org.koushik.javabrains.Point">
+		   		<property name="x" value="200" />
+		   		<property name="y" value="0" />
+		   </bean>
+		 </property>  -->
+   		
+   		<!-- <constructor-arg index="0" value="Equilateral" />
+   		<constructor-arg type="int" value="20" />
+      	<property name="type" value="Equilateral" />-->
+   </bean>
+   
+   <bean id="pointA" class="org.koushik.javabrains.Point" scope="singleton"> <!-- by default all bean are singleton,
+   						scope="prototype","request","session" and "global-session" -->
+   						<!-- If beans are singleton then they created at context initialization but if scope is prototype then it only created at the time of getBean() or using ref in other bean -->
+   		<property name="x" value="${pointA.pointX}" />
+   		<property name="y" value="${pointA.pointY}" />
+   </bean>
+   
+   <bean id="pointB" class="org.koushik.javabrains.Point">
+   		<qualifier value="circleRelated" />
+   		<property name="x" value="-20" />
+   		<property name="y" value="0" />
+   </bean>
+
+   <bean id="pointC" class="org.koushik.javabrains.Point">
+   		<property name="x" value="20" />
+   		<property name="y" value="0" />
+   </bean>
+   
+	<alias name="triangle" alias="triangle-alias" />
+	<!-- <bean class="org.koushik.javabrains.DisplayNameBeanPostProcessor" /> -->
+	<!-- <bean class="org.koushik.javabrains.MyBeanFactoryPP" /> -->
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations" value="pointsconfig.properties" />
+	</bean>
+	
+<!-- 	<bean id="circle" class="org.koushik.javabrains.Circle">
+   		<property name="center" ref="pointA" /> 		
+   </bean>
+ -->   
+<!--    <bean class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor" />
+   <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />
+ -->
+ 
+ 	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+ 		<property name="basenames">
+ 			<list>
+ 				<value>mymessages</value>
+ 			</list>
+ 		</property>
+ 	</bean>
+ 	<context:annotation-config />
+ 	
+ 	<context:component-scan base-package="org.koushik.javabrains" />
+ </beans>
